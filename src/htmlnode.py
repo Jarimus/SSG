@@ -13,7 +13,11 @@ class HTMLNode():
     
     def props_to_html(self):
         if not self.props:
+<<<<<<< HEAD
             return None
+=======
+            return ""
+>>>>>>> 04bc2c8 (implement LeafNode)
         result = ""
         for attribute, value in self.props.items():
             result += f' {attribute}="{value}"'
