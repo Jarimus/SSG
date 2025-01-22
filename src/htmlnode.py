@@ -6,7 +6,7 @@ class HTMLNode():
         self.props = props
     
     def __repr__(self):
-        return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
+        return f"HTMLNode('{self.tag}', '{self.value}', {self.children}, {self.props})"
     
     def __eq__(self, other: "HTMLNode"):
         return self.tag == other.tag and self.value == other.value and self.children == other.children and self.props == other.props
