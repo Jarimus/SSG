@@ -7,7 +7,6 @@ def build_public_from_static():
     """This function recreates the contents for the public directory using the content from the static directory."""
     root_dir = Path(__file__).parent.parent
     public_dir = root_dir / "public"
-    images_dir = public_dir / "images"
     static_dir = root_dir / "static"
 
     #remove current public directory
