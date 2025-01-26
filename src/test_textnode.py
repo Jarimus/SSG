@@ -47,7 +47,7 @@ class TestTextNode(unittest.TestCase):
 
     def test_IMAGE_to_html(self):
         text_node = TextNode("Alt text", TextType.IMAGE)
-        target = LeafNode("img", None, {"src": text_node.url, "alt": text_node.text})
+        target = LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
         self.assertEqual(text_node_to_html_node(text_node), target)
 
 

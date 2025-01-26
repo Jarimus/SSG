@@ -3,6 +3,7 @@ import shutil
 from md_to_htmlnode import markdown_to_html_node
 from extractors import extract_title
 
+
 def build_public_from_static():
     """This function recreates the contents for the public directory using the content from the static directory."""
     root_dir = Path(__file__).parent.parent
@@ -15,7 +16,9 @@ def build_public_from_static():
     #recreate 'public' from 'static'
     if not public_dir.exists():
         public_dir.mkdir()
+
     create_public_subdirs(static_dir)
+
 
 def remove_dir(path: Path):
     if path.exists():
@@ -38,6 +41,7 @@ def create_public_subdirs(current_path: Path):
             dst = Path( str(child).replace("/static", "/public/") )
             shutil.copy2(child, dst)
 
+
 def generate_page(from_path: Path, template_path: Path, dest_path: Path):
     print(f"{"#"*30}\nGenerating page\nfrom {from_path}\nto {dest_path}\nusing {template_path}\n{"#"*30}")
     
@@ -54,25 +58,34 @@ def generate_page(from_path: Path, template_path: Path, dest_path: Path):
     final_html = final_html.replace("{{ Title }}", title)
     final_html = final_html.replace("{{ Content }}", html_content)
 
-    print(final_html)
-
     if dest_path.exists():
         dest_path.unlink()
     dest_path.write_text(final_html)
 
 
+def generate_pages_recursive(src: Path, template_path: Path, dst: Path):
+    for child in src.iterdir():
+        src_item = src / child.name
+        if child.is_dir():
+            dst_item = dst / child.name
+            dst_item.mkdir(exist_ok=True)
+            generate_pages_recursive(src_item, template_path, dst_item)
+        elif child.is_file() and str(child).endswith(".md"):
+            dst_item = dst / (child.name[:-2] + "html")
+            generate_page(src_item, template_path, dst_item)
+
+
 def main():
     root_dir = Path(__file__).parent.parent
-    from_path = Path(root_dir / "content" / "index.md")
-    dest_path = Path(root_dir / "public" / "index.html")
+    public_path = Path(root_dir / "public")
     template_path = Path(root_dir / "template.html")
+    content_path = Path(root_dir / "content")
 
     #build the public dir and include any files from static
     build_public_from_static()
 
-    #generate the index.html from a markdown file and a html template. Write to /public/index.html
-    generate_page(from_path, template_path, dest_path)
-
+    #generate html files in "public" dir from markdown files from "content" dir while retaining subdir structure
+    generate_pages_recursive(content_path, template_path, public_path)
 
 
 main()
