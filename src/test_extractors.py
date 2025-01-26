@@ -1,6 +1,6 @@
 import unittest
 
-from extractors import extract_markdown_images, extract_markdown_links
+from extractors import extract_markdown_images, extract_markdown_links, extract_title
 
 class TestExtractImagesLinks(unittest.TestCase):
 
@@ -48,6 +48,27 @@ class TestExtractImagesLinks(unittest.TestCase):
         target_link = [('Here', 'boot.dev'), ('funny', 'wikipedia.com/funny')]
         self.assertEqual(result_img, target_img)
         self.assertEqual(result_link, target_link)
+
+    def test_extract_title1(self):
+        markdown = """##    wrong level heading  
+    
+    No heading
+    
+    in this **piece** of *text*"""
+        
+        with self.assertRaises(Exception):
+            extract_title(markdown)
+    
+    def test_extract_title2(self):
+        markdown = """#    A level 1 heading
+    
+    No heading
+    
+    in this **piece** of *text*"""
+        
+        target = "A level 1 heading"
+        
+        self.assertEqual(extract_title(markdown), target)
 
 
 if __name__ == '__main__':
