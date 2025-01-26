@@ -16,7 +16,7 @@ class ParentNode(HTMLNode):
         result = ""
         for child in self.children:
             result += child.to_html()
-        return f"<{self.tag}{self.props_to_html()}>\n{result}\n</{self.tag}>\n"
+        return f"<{self.tag}{self.props_to_html()}>{result}</{self.tag}>"
 
 if __name__ == '__main__':
     child1 = LeafNode("p", "This is paragraph1.")
