@@ -1,7 +1,5 @@
 import unittest
-from md_to_htmlnode import markdown_to_html_node
-from parentnode import ParentNode
-from leafnode import LeafNode
+from markdown_conversion import markdown_to_html_node
 
 class TestMdToHtmlNodes(unittest.TestCase):
 

@@ -1,11 +1,10 @@
 from pathlib import Path
 import shutil
-from md_to_htmlnode import markdown_to_html_node
-from extractors import extract_title
+from markdown_conversion import markdown_to_html_node, extract_title
 
 
 def build_public_from_static():
-    """This function recreates the contents for the public directory using the content from the static directory."""
+    """Recreates the contents for the public directory using the content from the static directory."""
     root_dir = Path(__file__).parent.parent
     public_dir = root_dir / "public"
     static_dir = root_dir / "static"
@@ -16,11 +15,11 @@ def build_public_from_static():
     #recreate 'public' from 'static'
     if not public_dir.exists():
         public_dir.mkdir()
-
-    create_public_subdirs(static_dir)
+    create_public_dir(static_dir)
 
 
 def remove_dir(path: Path):
+    """Removes a directory by unlinking all the files and removing subdirectories."""
     if path.exists():
         for child in path.iterdir():
             if child.is_dir():
@@ -30,19 +29,21 @@ def remove_dir(path: Path):
         path.rmdir()
 
 
-def create_public_subdirs(current_path: Path):
+def create_public_dir(current_path: Path):
+    """A helper function that copies files and subdirectories from static to public."""
     for child in current_path.iterdir():
         if child.is_dir():
             new_public_dir = Path( str(child).replace("/static/", "/public/") )
             if not new_public_dir.exists():
                 new_public_dir.mkdir()
-            create_public_subdirs(child)
+            create_public_dir(child)
         if child.is_file():
             dst = Path( str(child).replace("/static", "/public/") )
             shutil.copy2(child, dst)
 
 
 def generate_page(from_path: Path, template_path: Path, dest_path: Path):
+    """Generates a single HTML file from a markdown file."""
     print(f"{"#"*30}\nGenerating page\nfrom {from_path}\nto {dest_path}\nusing {template_path}\n{"#"*30}")
     
     if not (from_path.exists() or template_path.exists()):
@@ -64,6 +65,8 @@ def generate_page(from_path: Path, template_path: Path, dest_path: Path):
 
 
 def generate_pages_recursive(src: Path, template_path: Path, dst: Path):
+    """Crawls every entry in the src directory and its subdirectories for markdown files, which are converted to html files which are saved in the dst directory.
+    Retains subdirectory structure."""
     for child in src.iterdir():
         src_item = src / child.name
         if child.is_dir():

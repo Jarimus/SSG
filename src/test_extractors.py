@@ -1,6 +1,7 @@
 import unittest
 
-from extractors import extract_markdown_images, extract_markdown_links, extract_title
+from text_conversion import extract_markdown_images, extract_markdown_links
+from markdown_conversion import extract_title
 
 class TestExtractImagesLinks(unittest.TestCase):
 
